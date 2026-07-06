@@ -12,14 +12,14 @@ from sklearn.metrics import confusion_matrix, classification_report, roc_curve, 
 import seaborn as sns
 
 
-transforms = transforms.Compose([
+transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.1307), (0.3081,))
 ])
 
 
-train_dataset = torchvision.datasets.MNIST(root='./data', train=True, transform=transforms, download=True)
-test_dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=transforms, download=True)
+train_dataset = torchvision.datasets.MNIST(root='./data', train=True, transform=transform, download=True)
+test_dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=transform, download=True)
 
 train_loader = DataLoader(dataset=train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=1000, shuffle=False)
@@ -44,7 +44,7 @@ print(f'\n학습 장치 : {device}\n')
 
 model = MLP_Final().to(device)
 criterion = nn.CrossEntropyLoss()
-optimaizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 
 print("최종 모델 학습 중...")
@@ -52,11 +52,11 @@ for epoch in range(10):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
-        optimaizer.zero_grad()
+        optimizer.zero_grad()
         output = model(data)
         loss = criterion(output, target)
         loss.backward()
-        optimaizer.step()
+        optimizer.step()
 
         if batch_idx % 300 == 0:
             print(f'Epoch {epoch+1}, Batch {batch_idx}, Loss: {loss.item():.4f}')
